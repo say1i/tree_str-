@@ -1,0 +1,37 @@
+# Исполняемые и объектные файлы
+*.exe
+*.out
+*.app
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+
+# Директории и файлы сборки (CMake)
+build/
+out/
+bin/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+*.cmake
+
+# Данные, генерируемые самой программой (чтобы не засорять репозиторий)
+tree.html
+*.html
+
+# Настройки IDE (CLion, VS Code, Visual Studio)
+.idea/
+.vscode/
+.vs/
+*.suo
+*.user
+*.iml
+
+# Системные мусорные файлы (macOS, Windows)
+.DS_Store
+Thumbs.db
