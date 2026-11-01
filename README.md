@@ -13,5 +13,5 @@
 ## Как запустить
 
 Для компиляции проекта через терминал введите команду:
-1.g++ main.cpp Tree/Tree.cpp Html/TreeHtml.cpp -o tree_app
-2..\tree_app.exe
+*g++ main.cpp Tree/Tree.cpp Html/TreeHtml.cpp -o tree_app*
+.\tree_app.exe
