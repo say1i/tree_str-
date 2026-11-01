@@ -11,10 +11,7 @@ void tree::fixIndexes(node* n, int index) {
     fixIndexes(n->right, index * 2 + 1);
 }
 
-tree::~tree() {
-    // В идеале здесь должен быть код очистки памяти (удаление всех узлов), 
-    // но мы оставляем оригинальное поведение.
-}
+tree::~tree() {}
 
 node* tree::head() const { 
     return root; 
