@@ -20,3 +20,10 @@ target_link_libraries(Html PUBLIC Tree)
 
 add_executable(tree_str_ main.cpp)
 target_link_libraries(tree_str_ PRIVATE Tree Html)
+
+add_executable(tree_tests tree_test.cpp)
+target_include_directories(tree_tests PRIVATE tests)
+target_link_libraries(tree_tests PRIVATE Tree Html)
+
+enable_testing()
+add_test(NAME tree_unit_tests COMMAND tree_tests)
