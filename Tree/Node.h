@@ -1,12 +1,13 @@
 #pragma once
 #include <string>
+#include <memory>
 
 struct node {
     std::string value;
     int index;
-    node* left = nullptr;
-    node* right = nullptr;
-    node* parent = nullptr;
+    std::unique_ptr<node> left = nullptr;//отвечает за удаление
+    std::unique_ptr<node> right = nullptr;
+    node* parent = nullptr;//не отвечает за удаление
 };
 
 struct levelPair {

@@ -28,8 +28,8 @@ void treeHtml::push(const tree& instance, const string& description) {
     while (!nodes.empty()) {
         node* temp = nodes.front();
         nodes.pop();
-        add_node(nodes, temp, temp->left, true);
-        add_node(nodes, temp, temp->right, false);
+        add_node(nodes, temp, temp->left.get(), true);
+        add_node(nodes, temp, temp->right.get(), false);
     }
     out << "classDef hidden display: none;</div>\n</div>\n";
 }

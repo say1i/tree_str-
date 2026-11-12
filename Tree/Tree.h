@@ -2,14 +2,15 @@
 #include "Node.h"
 #include <string>
 #include <vector>
+#include <memory>
 
 class tree {
 private:
-    node* root = nullptr;
+    std::unique_ptr<node> root = nullptr;
     void fixIndexes(node* n, int index);
 
 public:
-    ~tree();
+    ~tree() = default;
 
     node* head() const;
     void push(const std::string& x);
