@@ -1,11 +1,30 @@
+#include <fstream>
+
 #include "Tree/Tree.h"
 #include "Html/TreeHtml.h"
 #include <iostream>
 #include <string>
+#include <boost/program_options.hpp>
 
 using namespace std;
-//ф1
-int main() {
+namespace po = boost::program_options;
+int main(int argc, char* argv[]) {
+    string file;
+    string title;
+
+    po::options_description desc("Options");
+    desc.add_options()
+        ("file", po::value<string>(&file)->default_value("../tree.html"), "HTML file")
+        ("title", po::value<string>(&title)->default_value("Бинарное Дерево"), "HTML title");
+
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+
+    ifstream cfg("config.cfg");
+    if (cfg) {
+        po::store(po::parse_config_file(cfg, desc), vm);
+    }
+    po::notify(vm);
     tree t;
     treeHtml th("../tree.html");
 
