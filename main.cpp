@@ -4,10 +4,27 @@
 #include "Html/TreeHtml.h"
 #include <iostream>
 #include <string>
+#include <regex>
 #include <boost/program_options.hpp>
 
 using namespace std;
 namespace po = boost::program_options;
+
+string inputValidWord() {
+    string x;
+    const regex pattern("^[a-zA-Z]+$");
+
+    while (true) {
+        cout << "формат a-z, A-Z\n> ";
+        getline(cin >> ws, x);
+
+        if (regex_match(x, pattern)) {
+            return x;
+        }
+        cout << "неверный формат повторите ввод\n";
+    }
+}
+
 int main(int argc, char* argv[]) {
     string file;
     string title;
@@ -49,6 +66,7 @@ int main(int argc, char* argv[]) {
 
         switch (v) {
             case 1:
+                x = inputValidWord();
                 cout << "Ввод строки\n> ";
                 cin >> x;
                 t.push(x);
@@ -56,6 +74,7 @@ int main(int argc, char* argv[]) {
                 t.show();
                 break;
             case 2:
+                x = inputValidWord();
                 cout << "Ввод строки\n> ";
                 cin >> x;
                 if (t.eliminate(x)) {
@@ -65,6 +84,7 @@ int main(int argc, char* argv[]) {
                 else cout << "Нечего удалять!" << endl;
                 break;
             case 3: {
+                x = inputValidWord();
                 cout << "Ввод строки\n> ";
                 cin >> x;
                 int index = t.lookfor(x);
