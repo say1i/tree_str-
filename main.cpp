@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
                 x = inputValidWord();
                 cout << "Ввод строки\n> ";
                 cin >> x;
-                int index = t.lookfor(x);
+                int index = t.lookfor(x).value();
                 cout << "Результат поиска: " << (index == -1 ? "Не найдено" : to_string(index)) << endl;
                 break;
             }

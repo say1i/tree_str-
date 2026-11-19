@@ -10,7 +10,7 @@ private:
     std::string title;
     std::ostringstream out;
 
-    void add_node(std::queue<node*>& nodes, node*& temp, node* child, bool is_left);
+    void add_node(std::queue<node*>& nodes, const node* temp,const node* child, bool is_left);
 
 public:
     treeHtml(std::string file = "", std::string title = "Бинарное Дерево");

@@ -13,7 +13,7 @@ void tree::fixIndexes(node* n, int index) {
     fixIndexes(n->right.get(), index * 2 + 1);
 }
 
-node* tree::head() const {
+const node *tree::head() const  noexcept{
     return root.get();
 }
 
@@ -50,60 +50,64 @@ void tree::push(const string& x) {
     }
 }
 
-int tree::lookfor(const string& x) {
-    node* temp = root.get();
+std::optional<std::size_t> tree::lookfor(std::string_view x) const noexcept {
+    const node* temp = root.get();
     while (temp) {
         if (x == temp->value) return temp->index;
-        temp = (x < temp->value ? temp->left : temp->right).get();
+        temp = (x < temp->value) ? temp->left.get() : temp->right.get();
     }
-    return -1;
+    return std::nullopt;
 }
 
-bool tree::eliminate(const string& x) {
+bool tree::eliminate(std::string_view x) {
     node* temp = root.get();
 
     while (temp && temp->value != x) {
-        if (x < temp->value) temp = temp->left.get();
-        else temp = temp->right.get();
+        temp = (x < temp->value) ? temp->left.get() : temp->right.get();
     }
 
-    if (temp == nullptr) return false;
+    if (!temp) return false;
 
-    // узел без потомков
-    if (temp->left == nullptr && temp->right == nullptr) {
-        if (temp == root.get()) root.reset();
-        else if (temp->parent->left.get() == temp) temp->parent->left.reset();
-        else temp->parent->right.reset();
+    // Узел без потомков
+    if (!temp->left && !temp->right) {
+        if (temp == root.get()) {
+            root.reset();
+        } else if (temp->parent->left.get() == temp) {
+            temp->parent->left.reset();
+        } else {
+            temp->parent->right.reset();
+        }
     }
-    // узел с одним потомком
-    else if (temp->left == nullptr || temp->right == nullptr) {
-        unique_ptr<node> child = temp->left != nullptr ? move(temp->left) : move(temp->right);
+    // Узел с одним потомком
+    else if (!temp->left || !temp->right) {
+        std::unique_ptr<node> child = temp->left ? std::move(temp->left) : std::move(temp->right);
         child->parent = temp->parent;
 
         if (temp == root.get()) {
-            root = move(child);
-        }
-        else {
+            root = std::move(child);
+        } else {
             auto& link = (temp->parent->left.get() == temp) ? temp->parent->left : temp->parent->right;
-            link = move(child);
+            link = std::move(child);
         }
     }
-    // узел с двумя потомками
+    // Узел с двумя потомками
     else {
         node* pred = temp->left.get();
-        while (pred->right != nullptr) pred = pred->right.get();
+        while (pred->right) {
+            pred = pred->right.get();
+        }
 
-        // Замена данных
-        temp->value = pred->value;
+        temp->value = std::move(pred->value);
 
-        // Удаление предшественника
-        unique_ptr<node> child = move(pred->left);
+        std::unique_ptr<node> child = std::move(pred->left);
         node* parent = pred->parent;
 
-        if (child != nullptr) child->parent = parent;
+        if (child) {
+            child->parent = parent;
+        }
 
         auto& link = (parent->left.get() == pred) ? parent->left : parent->right;
-        link = move(child);
+        link = std::move(child);
     }
 
     fixIndexes(root.get(), 1);
@@ -111,92 +115,100 @@ bool tree::eliminate(const string& x) {
 }
 
 void tree::show() const {
-    cout << "{ ";
+    std::cout << "{ ";
     if (!root) {
-        cout << '}' << endl;
+        std::cout << "}\n";
         return;
     }
 
-    queue<node*> q;
+    std::queue<const node*> q;
     q.push(root.get());
 
     while (!q.empty()) {
-        node* p = q.front();
+        const node* p = q.front();
         q.pop();
-        cout << "\n " << p->index << ": " << p->value;
+        std::cout << "\n " << p->index << ": " << p->value;
 
         if (p->left) q.push(p->left.get());
         if (p->right) q.push(p->right.get());
     }
 
-    cout << "\n}" << endl;
+    std::cout << "\n}\n";
 }
 
-string tree::findMaxByLetters() {
-    if (!root) return "";
+std::string tree::findMaxByLetters() const {
+    if (!root) return {};
 
-    node* temp = root.get();
-    while (temp->right != nullptr) temp = temp->right.get();
+    const node* temp = root.get();
+    while (temp->right) {
+        temp = temp->right.get();
+    }
 
     return temp->value;
 }
 
-vector<node*> tree::getKStage(int k) {
-    vector<node*> r;
-    if (!root) return r;
+vector<node*> tree::getKStage(std::size_t k) const {
+    std::vector<node*> r;
+    if (!root || k == 0) return r;
 
-    queue<levelPair> q;
+    std::queue<levelPair> q;
     q.push({root.get(), 1});
 
     while (!q.empty()) {
-        levelPair lp = q.front();
+        auto [n, level] = q.front();
         q.pop();
 
-        if (k == lp.level) r.push_back(lp.n);
+        if (level > k) break;
+        if (level == k) r.push_back(vector<node *>::value_type(n));
 
-        if (lp.n->left) q.push({lp.n->left.get(), lp.level + 1});
-        if (lp.n->right) q.push({lp.n->right.get(), lp.level + 1});
+        if (n->left) q.push({n->left.get(), level + 1});
+        if (n->right) q.push({n->right.get(), level + 1});
     }
 
     return r;
 }
 
-string tree::findMaxByLength() {
-    if (!root) return "";
+std::string tree::findMaxByLength() const {
+    if (!root) return {};
 
-    string max = root->value;
-    queue<node*> q;
+    std::string maxStr = root->value;
+    std::queue<const node*> q;
     q.push(root.get());
 
     while (!q.empty()) {
-        node* n = q.front();
+        const node* n = q.front();
         q.pop();
 
-        if (n->value.size() > max.size()) max = n->value;
+        if (n->value.size() > maxStr.size()) {
+            maxStr = n->value;
+        }
 
         if (n->left) q.push(n->left.get());
         if (n->right) q.push(n->right.get());
     }
 
-    return max;
+    return maxStr;
 }
 
-string tree::findMaxByLengthOnKLevel(int k) {
-    if (!root) return "";
+std::string tree::findMaxByLengthOnKLevel(std::size_t k) const {
+    if (!root || k == 0) return {};
 
-    string max = "";
-    queue<levelPair> q;
+    std::string maxStr;
+    std::queue<levelPair> q;
     q.push({root.get(), 1});
 
     while (!q.empty()) {
-        levelPair lp = q.front();
+        auto [n, level] = q.front();
         q.pop();
 
-        if (k == lp.level && lp.n->value.size() > max.size()) max = lp.n->value;
+        if (level > k) break;
+        if (level == k && n->value.size() > maxStr.size()) {
+            maxStr = n->value;
+        }
 
-        if (lp.n->left) q.push({lp.n->left.get(), lp.level + 1});
-        if (lp.n->right) q.push({lp.n->right.get(), lp.level + 1});
+        if (n->left) q.push({n->left.get(), level + 1});
+        if (n->right) q.push({n->right.get(), level + 1});
     }
 
-    return max;
+    return maxStr;
 }

@@ -3,13 +3,12 @@
 
 using namespace std;
 
-void treeHtml::add_node(queue<node*>& nodes, node*& temp, node* child, bool is_left) {
+void treeHtml::add_node(std::queue<node*>& nodes, const node* temp,const node* child, bool is_left) {
     if (child) {
-        nodes.push(child);
+        nodes.push(queue<node *>::value_type(child));
         out << temp->index << "[\"" << temp->value << "\"]---" << child->index << "[\"" << child->value << "\"]\n";
-    }
-    else {
-        unsigned idx = is_left ? temp->index * 2 : temp->index * 2 + 1;
+    } else {
+        const std::size_t idx = is_left ? temp->index * 2 : temp->index * 2 + 1;
         out << temp->index << "[\"" << temp->value << "\"]~~~" << idx << ":::hidden\n";
     }
 }
@@ -24,7 +23,7 @@ void treeHtml::push(const tree& instance, const string& description) {
 
     out << "<div class=\"mermaid\" align=\"center\">graph TD;\n";
     queue<node*> nodes;
-    nodes.push(instance.head());
+    nodes.push(queue<node *>::value_type(instance.head()));
     while (!nodes.empty()) {
         node* temp = nodes.front();
         nodes.pop();

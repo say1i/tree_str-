@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <optional>
 
 class tree {
 private:
@@ -12,14 +13,15 @@ private:
 public:
     ~tree() = default;
 
-    node* head() const;
-    void push(const std::string& x);
-    int lookfor(const std::string& x);
-    bool eliminate(const std::string& x);
+    const node* head() const noexcept;
+    void push(const std::string &x);
+    std::optional<std::size_t> lookfor(std::string_view x) const noexcept;
+    bool eliminate(std::string_view x);
     void show() const;
-    
-    std::string findMaxByLetters();
-    std::vector<node*> getKStage(int k);
-    std::string findMaxByLength();
-    std::string findMaxByLengthOnKLevel(int k);
+
+    std::string findMaxByLetters() const;
+
+    std::vector<node *> getKStage(std::size_t k) const;
+    std::string findMaxByLength() const;
+    std::string findMaxByLengthOnKLevel(std::size_t k) const;
 };
